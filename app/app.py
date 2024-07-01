@@ -2,11 +2,12 @@ import os
 from flask import request, jsonify, Flask
 from flask_cors import CORS
 from PIL import Image, ImageDraw, ImageFont
-from app.utils import format_phone_number, get_state_abbreviation, validate_name
+from .utils import format_phone_number, get_state_abbreviation, validate_name
 from dotenv import load_dotenv
 from google.oauth2 import service_account
 from googleapiclient.discovery import build
 from googleapiclient.http import MediaFileUpload 
+
 
 ##Setting application
 app = Flask(__name__)
