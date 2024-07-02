@@ -8,7 +8,7 @@ from google.oauth2 import service_account
 from googleapiclient.discovery import build
 from googleapiclient.http import MediaFileUpload
 
-from utils import format_phone_number, get_state_abbreviation, validate_name
+from .utils import *
 from app_error import AppError
 
 ##Setting application
