@@ -9,7 +9,7 @@ from googleapiclient.discovery import build
 from googleapiclient.http import MediaFileUpload
 
 from .utils import *
-from app_error import AppError
+from .app_error import *
 
 ##Setting application
 app = Flask(__name__)
