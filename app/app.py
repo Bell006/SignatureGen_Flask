@@ -1,4 +1,5 @@
 import os
+import sys
 import tempfile
 from flask import request, jsonify, Flask
 from flask_cors import CORS
@@ -8,8 +9,12 @@ from google.oauth2 import service_account
 from googleapiclient.discovery import build
 from googleapiclient.http import MediaFileUpload
 
-from .utils import *
-from .app_error import *
+current_dir = os.path.abspath(os.path.dirname(__file__))
+parent_dir = os.path.abspath(os.path.join(current_dir, '..'))
+sys.path.append(parent_dir)
+
+from app.utils import format_phone_number, get_state_abbreviation, validate_name
+from app.app_error import AppError
 
 ##Setting application
 app = Flask(__name__)
