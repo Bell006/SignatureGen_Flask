@@ -1,7 +1,7 @@
 import re
 from unidecode import unidecode
 
-from app_error import AppError
+from app.app_error import AppError
 
 # List of states and their abbreviations
 states = {
