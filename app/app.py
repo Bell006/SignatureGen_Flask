@@ -60,16 +60,21 @@ def create_email_signature():
         department = data.get('department', '').upper()
         city = data.get('city', '').upper()
         state = data.get('state', '').upper()
+        regional = data.get('regional', '').upper()
 
         # Format the phone number
         formatted_phone = format_phone_number(phone)
 
         # Validates name
         validate_name(name)
-
-        # Get state abbreviation
-        state_abbreviation = get_state_abbreviation(state)
-
+        
+        if regional:
+            state_text = f'REGIONAL {regional}'
+        else:
+            # Get state abbreviation
+            state_abbreviation = get_state_abbreviation(state)
+            state_text = state_abbreviation
+        
         # Use url_for to get the correct path to the image
         template_image_path = os.path.join(app.root_path, 'static', 'assets', 'signature_template.jpg')
         if not os.path.exists(template_image_path):
@@ -120,7 +125,11 @@ def create_email_signature():
         text_wrapper_width = text_bbox[2] - text_bbox[0]
 
         # Calculate the width of the city text
-        city_state_text = f'{city} - {state_abbreviation}'
+        if regional:
+            city_state_text = f'{state_text}'
+        else:
+            city_state_text = f'{city} - {state_text}'
+            
         city_state_width = draw.textbbox((0, 0), city_state_text, font=fontSubTitle)[2]
 
         # Total width for the rounded rectangle

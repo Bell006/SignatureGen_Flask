@@ -14,7 +14,8 @@ states = {
     'MATO GROSSO': 'MT',
     'RORAIMA': 'RO',
     'BAHIA': 'BA',
-    'ALAGOAS': 'AL'
+    'ALAGOAS': 'AL',
+    'ACRE': 'AC'
 }
 
 def format_phone_number(phone):
