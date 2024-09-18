@@ -58,7 +58,7 @@ def create_email_signature():
         state = data.get('state', '').upper()
         regional = data.get('regional', '').upper()
 
-        if not name or not city or not department:
+        if not name or not city or not department or not phone:
            raise AppError('Preencha todos os campos.', 400)
         
         # Format the phone number
@@ -88,8 +88,9 @@ def create_email_signature():
         
         if not os.path.exists(font_path_black) or not os.path.exists(font_path_regular) or not os.path.exists(font_path_bold):
             return jsonify({'message': 'Font file not found'}), 404
-
-        fontTitle = ImageFont.truetype(font_path_black, 23)
+        
+        font_title_size = 23
+        fontTitle = ImageFont.truetype(font_path_black, font_title_size)
         fontSubTitle = ImageFont.truetype(font_path_regular, 12)
         fontSubTitleBold = ImageFont.truetype(font_path_bold, 12)
         
@@ -113,8 +114,18 @@ def create_email_signature():
         name_position = (33.77, 22.12)
         phone_position = (56.39, 86)
         text_wrapper_position = (43, 54.5)
-        
+
         # Draw the text on the image
+        while True:
+            # Get name's max width
+            name_width = draw.textbbox((0, 0), name, font=fontTitle)[2]
+            fontTitle = ImageFont.truetype(font_path_black, font_title_size)
+
+            if name_width <= 306 or font_title_size == 21:
+                break
+
+            font_title_size -= 0.5
+
         draw.text(name_position, name, font=fontTitle, fill="#657725")
         draw.text(phone_position, formatted_phone, font=fontSubTitleBold, fill="#38372f")
         draw.text(text_wrapper_position, text_wrapper, font=fontSubTitle, fill="#38372f")
@@ -160,6 +171,7 @@ def create_email_signature():
                 'name': output_filename,
                 'parents': [google_drive_folder_id],
             }
+
             media = MediaFileUpload(output_path, mimetype='image/jpeg', resumable=True)
             uploaded_file = drive_service.files().create(body=file_metadata, media_body=media, fields='id').execute()
 
