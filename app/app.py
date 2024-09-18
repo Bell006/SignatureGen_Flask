@@ -43,10 +43,6 @@ credentials = service_account.Credentials.from_service_account_info(credentials_
 drive_service = build('drive', 'v3', credentials=credentials)
     
 @app.errorhandler(AppError)
-def handle_app_error(error):
-    response = jsonify({'message': error.message})
-    response.status_code = error.status_code
-    return response
 
 @app.route('/create_signature', methods=['POST'])
 
@@ -62,6 +58,9 @@ def create_email_signature():
         state = data.get('state', '').upper()
         regional = data.get('regional', '').upper()
 
+        if not name or not city or not department:
+           raise AppError('Preencha todos os campos.', 400)
+        
         # Format the phone number
         formatted_phone = format_phone_number(phone)
 
@@ -171,7 +170,7 @@ def create_email_signature():
 
         return jsonify({'image_url': file_link}), 200
     except AppError as e:
-        return handle_app_error(e)
+        return jsonify({'message': e.message}), e.status_code
     except Exception as e:
         print(e)
         return jsonify({'message': 'Erro ao criar a assinatura. Por favor, tente novamente mais tarde.'}), 500
