@@ -1,4 +1,5 @@
 Flask
+gspread
 Flask-CORS
 Pillow
 python-dotenv

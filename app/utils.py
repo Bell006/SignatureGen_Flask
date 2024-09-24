@@ -28,7 +28,7 @@ def format_phone_number(phone):
         digits = digits[1:]
 
     if len(digits) < 10 or len(digits) > 11:
-        raise AppError("Celular: DDD + 9 + número | Fixo: DDD + número", 400)
+        raise AppError("Informe um número válido.\n(Celular: DDD + 9 + número | Fixo: DDD + número)", 400)
     
     if len(digits) == 10 and digits[2] in '6789':
         digits = digits[:2] + '9' + digits[2:]

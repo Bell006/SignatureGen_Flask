@@ -1,19 +1,13 @@
 import os
-import sys
 import tempfile
 from flask import request, jsonify, Flask
 from flask_cors import CORS
 from PIL import Image, ImageDraw, ImageFont
 from dotenv import load_dotenv
-from google.oauth2 import service_account
-from googleapiclient.discovery import build
 from googleapiclient.http import MediaFileUpload
 
-current_dir = os.path.abspath(os.path.dirname(__file__))
-parent_dir = os.path.abspath(os.path.join(current_dir, '..'))
-sys.path.append(parent_dir)
-
 from app.utils import format_phone_number, get_state_abbreviation, validate_name
+from app.google_api import add_to_google_sheet, drive_service
 from app.app_error import AppError
 
 ##Setting application
@@ -21,26 +15,7 @@ app = Flask(__name__)
 CORS(app)
 
 load_dotenv()
-
 google_drive_folder_id = os.getenv('GOOGLE_DRIVE_FOLDER_ID')
-
-# Create credentials_info dictionary from environment variables
-credentials_info = {
-    "type": os.getenv('TYPE'),
-    "project_id": os.getenv('PROJECT_ID'),
-    "private_key_id": os.getenv('PRIVATE_KEY_ID'),
-    "private_key": os.getenv('PRIVATE_KEY'),
-    "client_email": os.getenv('CLIENT_EMAIL'),
-    "client_id": os.getenv('CLIENT_ID'),
-    "auth_uri": os.getenv('AUTH_URI'),
-    "token_uri": os.getenv('TOKEN_URI'),
-    "auth_provider_x509_cert_url": os.getenv('AUTH_PROVIDER_X509_CERT_URL'),
-    "client_x509_cert_url": os.getenv('CLIENT_X509_CERT_URL'),
-    "universe_domain": "googleapis.com"
-}
-
-credentials = service_account.Credentials.from_service_account_info(credentials_info)
-drive_service = build('drive', 'v3', credentials=credentials)
     
 @app.errorhandler(AppError)
 
@@ -51,8 +26,9 @@ def create_email_signature():
 
         data = request.get_json()
 
+        email = data.get('email', '')
         name = data.get('name', '').upper()
-        phone = format_phone_number(data.get('phone', ''))
+        phone = data.get('phone', '')
         department = data.get('department', '').upper()
         city = data.get('city', '').upper()
         state = data.get('state', '').upper()
@@ -159,6 +135,8 @@ def create_email_signature():
         rect_x1 = rect_x0 + total_width + 18
         rect_y1 = 71
         draw.rounded_rectangle((rect_x0, rect_y0, rect_x1, rect_y1), outline="#657725", width=2, radius=8)
+
+        add_to_google_sheet(data)
 
         with tempfile.NamedTemporaryFile(suffix='.jpg', delete=False) as temp_file:
             output_filename = f'{name.replace(" ", "_")}_assinatura.jpg'
