@@ -19,7 +19,6 @@ class TestCase_format_number(unittest.TestCase):
         with self.assertRaises(AppError):
             format_phone_number("")
 
-
 class TestCase_get_state_abbreviation(unittest.TestCase):
     def test_valid_state(self):
         self.assertEqual(get_state_abbreviation('São Paulo'), 'SP')

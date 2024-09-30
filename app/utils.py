@@ -12,11 +12,18 @@ states = {
     'RIO DE JANEIRO': 'RJ',
     'TOCANTINS': 'TO',
     'MATO GROSSO': 'MT',
-    'RORAIMA': 'RO',
+    'RORAIMA': 'RR',
     'BAHIA': 'BA',
     'ALAGOAS': 'AL',
     'ACRE': 'AC',
-    'AMAPA': 'AP'
+    'AMAPA': 'AP',
+    'RIO GRANDE DO SUL': 'RS',
+    'ESPIRITO SANTO': 'ES',
+    'MARANHAO': 'MA',
+    'RONDONIA': 'RO',
+    'SANTA CATARINA': 'SC',
+    'CEARA': 'CE'
+
 }
 
 def format_phone_number(phone):
