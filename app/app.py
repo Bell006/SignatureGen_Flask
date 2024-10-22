@@ -34,7 +34,7 @@ def create_email_signature():
         state = data.get('state', '').upper()
         regional = data.get('regional', '').upper()
 
-        if not name or not city or not department or not phone:
+        if not name or not department or not phone:
            raise AppError('Preencha todos os campos.', 400)
         
         # Format the phone number
