@@ -3,19 +3,17 @@ import tempfile
 from flask import request, jsonify, Flask
 from flask_cors import CORS
 from PIL import Image, ImageDraw, ImageFont
-from dotenv import load_dotenv
 from googleapiclient.http import MediaFileUpload
 
 from app.utils import format_phone_number, get_state_abbreviation, validate_name
-from app.google_api import add_to_google_sheet, drive_service
+from app.google_api import GoogleAPI
 from app.app_error import AppError
 
 ##Setting application
 app = Flask(__name__)
 CORS(app)
 
-load_dotenv()
-google_drive_folder_id = os.getenv('GOOGLE_DRIVE_FOLDER_ID')
+google_api = GoogleAPI()
     
 @app.errorhandler(AppError)
 
@@ -136,7 +134,7 @@ def create_email_signature():
         rect_y1 = 71
         draw.rounded_rectangle((rect_x0, rect_y0, rect_x1, rect_y1), outline="#657725", width=2, radius=8)
 
-        add_to_google_sheet(data)
+        google_api.add_to_google_sheet(data)
 
         with tempfile.NamedTemporaryFile(suffix='.jpg', delete=False) as temp_file:
             output_filename = f'{name.replace(" ", "_")}_assinatura.jpg'
@@ -147,8 +145,10 @@ def create_email_signature():
             # Google Drive upload
             file_metadata = {
                 'name': output_filename,
-                'parents': [google_drive_folder_id],
+                'parents': [google_api.credentials_info["google_drive_folder_id"]],
             }
+
+            drive_service = google_api.get_google_drive_service()
 
             media = MediaFileUpload(output_path, mimetype='image/jpeg', resumable=True)
             uploaded_file = drive_service.files().create(body=file_metadata, media_body=media, fields='id').execute()
