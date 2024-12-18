@@ -1,5 +1,4 @@
 import unittest
-
 from ..utils import *
 
 class TestCase_format_number(unittest.TestCase):
@@ -18,15 +17,13 @@ class TestCase_format_number(unittest.TestCase):
     def test_format_invalid_number(self):
         with self.assertRaises(AppError):
             format_phone_number("")
-
 class TestCase_get_state_abbreviation(unittest.TestCase):
     def test_valid_state(self):
         self.assertEqual(get_state_abbreviation('São Paulo'), 'SP')
     
     def test_invalid_state(self):
         with self.assertRaises(AppError):
-            get_state_abbreviation('Batata')
-
+            get_state_abbreviation('Washington')
 class TestCase_validate_name(unittest.TestCase):
     def test_valid_name(self):
         self.assertTrue
@@ -35,9 +32,5 @@ class TestCase_validate_name(unittest.TestCase):
         with self.assertRaises(AppError):
             validate_name('Bell da Silva Pereira')
     
-
-
-
-
 if __name__ == '__main__':
     unittest.main()
